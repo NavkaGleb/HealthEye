@@ -4,13 +4,17 @@ project(HealthEye)
 
 set(CMAKE_CXX_STANDARD 20)
 
-set(HEADER_FILES
-        )
+# SFML
+find_package(SFML 2.5.1 COMPONENTS system window graphics REQUIRED)
 
-set(SOURCE_FILES
-    src/main.cpp
-)
+# ImGui-SFML
+find_package(ImGui-SFML REQUIRED)
 
-include_directories(src)
+file(GLOB HEADER_FILES "src/*.h" "src/*.hpp")
+file(GLOB SOURCE_FILES "src/*.cpp")
+
+include_directories("src" ${SFML_INCLUDE_DIR})
 
 add_executable(${PROJECT_NAME} ${HEADER_FILES} ${SOURCE_FILES})
+
+target_link_libraries(${PROJECT_NAME} PRIVATE ${SFML_LIBRARIES} ${SFML_DEPENDENCIES} ImGui-SFML::ImGui-SFML)
