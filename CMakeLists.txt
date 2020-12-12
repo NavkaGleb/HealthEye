@@ -15,6 +15,6 @@ file(GLOB SOURCE_FILES "src/*.cpp")
 
 include_directories("src" ${SFML_INCLUDE_DIR})
 
-add_executable(${PROJECT_NAME} ${HEADER_FILES} ${SOURCE_FILES})
+add_executable(${PROJECT_NAME} ${HEADER_FILES} ${SOURCE_FILES} src/Application/Application.cpp src/Application/Application.hpp)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE ${SFML_LIBRARIES} ${SFML_DEPENDENCIES} ImGui-SFML::ImGui-SFML)
