@@ -19,6 +19,8 @@ namespace Hey {
         // member methods
         void OpenWindow();
         void CloseWindow();
+        void OnUpdate();
+        void OnRender();
 
         // member data
         sf::VideoMode    m_VideoMode;
