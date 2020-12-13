@@ -1,24 +1,40 @@
 #include "Application.hpp"
 
 #include <iostream>
-#include <chrono>
 #include <thread>
 
-#include <imgui.h>
 #include <imgui-SFML.h>
 
 #include <SFML/Window/Event.hpp>
 
-namespace Hey {     // healthy eye
+namespace Hey {
 
     // constructor / destructor
     Application::Application(unsigned int width, unsigned int height, const char* title)
-        : m_VideoMode(width, height),
-          m_Title(title) {
+        : m_Window(sf::VideoMode(width, height), title),
+          m_Colors{ 0.0f, 0.0f, 0.0f },
+          m_Visible(true) {
 
-        m_WINWindow = GetConsoleWindow();
-        ShowWindow(m_WINWindow, SW_HIDE);
+        HWND__* windowsConsoleWindow = GetConsoleWindow();
+        ShowWindow(windowsConsoleWindow, SW_HIDE);
 
+        ImGui::SFML::Init(m_Window);
+
+        ImGuiIO &io = ImGui::GetIO();
+        m_Font = io.Fonts->AddFontFromFileTTF("../media/Fonts/Baloo2-Medium.ttf", 30.0f);
+        ImGui::SFML::UpdateFontTexture();
+
+        m_Shortcuts[ShortcutType::Visible] = {
+            sf::Keyboard::LControl,
+            sf::Keyboard::LSystem,
+            sf::Keyboard::H
+        };
+
+        m_Shortcuts[ShortcutType::Kill] = {
+            sf::Keyboard::LAlt,
+            sf::Keyboard::LSystem,
+            sf::Keyboard::K,
+        };
     }
 
     Application::~Application() {
@@ -27,44 +43,20 @@ namespace Hey {     // healthy eye
 
     // public methods
     void Application::Run() {
-        OpenWindow();
+        m_Start = std::chrono::steady_clock::now();
 
-        sf::Clock clock;
-        sf::Color backgroundColor;
-        float color[3] = {0.f, 0.f, 0.f};
-
-        bool checkBox = true;
-        float sliderValue = 0.0f;
-
-        const char *items[] = {"Apple", "Banana", "Orange"};
-        int selectedItem = 0;
-
-        ImGui::SFML::Init(m_SFMLWindow);
-        ImGui::GetStyle();
-
-        ImGuiIO &io = ImGui::GetIO();
-        ImFont *font = io.Fonts->AddFontFromFileTTF("../media/Fonts/Baloo2-Medium.ttf", 30.0f);
-        ImGui::SFML::UpdateFontTexture();
-
-        std::chrono::time_point<std::chrono::steady_clock> start = std::chrono::steady_clock::now();
-
-        while (m_SFMLWindow.isOpen()) {
-            decltype(start) end = std::chrono::steady_clock::now();
-
+        while (m_Window.isOpen()) {
             sf::Event event{};
 
-            while (m_SFMLWindow.pollEvent(event)) {
+            while (m_Window.pollEvent(event)) {
                 ImGui::SFML::ProcessEvent(event);
 
-                if (event.type == sf::Event::Closed)
-                    m_SFMLWindow.setVisible(false);
+                if (event.type == sf::Event::Closed) {
+                    m_Visible = false;
+                    m_Window.setVisible(m_Visible);
+                }
+
             }
-
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl) &&
-                sf::Keyboard::isKeyPressed(sf::Keyboard::LAlt) &&
-                sf::Keyboard::isKeyPressed(sf::Keyboard::O))
-                std::cout << "fuck this shit" << std::endl;
-
 
             OnUpdate();
             OnRender();
@@ -73,56 +65,64 @@ namespace Hey {     // healthy eye
 
     // member methods
     void Application::OpenWindow() {
-        m_SFMLWindow.create(m_VideoMode, m_Title, sf::Style::Close);
-        m_SFMLWindow.setVerticalSyncEnabled(true);
-        m_SFMLWindow.setFramerateLimit(60u);
+        m_Window.create(m_VideoMode, m_Title, sf::Style::Close);
+        m_Window.setVerticalSyncEnabled(true);
+        m_Window.setFramerateLimit(60u);
+        m_Window.setKeyRepeatEnabled(false);
     }
 
     void Application::CloseWindow() {
-        m_SFMLWindow.close();
+        m_Window.close();
     }
 
     void Application::OnUpdate() {
-        if (std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() >= 2000) {
-//                CloseWindow();
-//                m_SFMLWindow.setVisible(false);
-            std::this_thread::sleep_for(std::chrono::milliseconds(2000));
-//                OpenWindow();
-//                m_SFMLWindow.setVisible(true);
-            start = std::chrono::steady_clock::now();
-            end = std::chrono::steady_clock::now();
+        for (auto& [type, shortcut] : m_Shortcuts)
+            shortcut.OnUpdate();
+
+        if (m_Shortcuts[ShortcutType::Visible].IsActive()) {
+            m_Visible = !m_Visible;
+            m_Window.setVisible(m_Visible);
         }
 
-        /// update
+        if (m_Shortcuts[ShortcutType::Kill].IsActive()) {
+            m_Window.close();
+        }
+
+        m_End = std::chrono::steady_clock::now();
+
+//        if (std::chrono::duration_cast<std::chrono::milliseconds>(m_End - m_Start).count() >= 2000) {
+////                CloseWindow();
+////                m_Window.setVisible(false);
+//            std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+////                OpenWindow();
+////                m_Window.setVisible(true);
+//            m_Start = std::chrono::steady_clock::now();
+//            m_End = std::chrono::steady_clock::now();
+//        }
+
         // update ImGui
-        sf::Time elapsedTime = clock.restart();
-        ImGui::SFML::Update(m_SFMLWindow, elapsedTime);
+        sf::Time elapsedTime = m_Clock.restart();
+        ImGui::SFML::Update(m_Window, elapsedTime);
 
         // begin ImGui
-        ImGui::PushFont(font);
+        ImGui::PushFont(m_Font);
         ImGui::SetNextWindowPos(sf::Vector2f(0.0f, 0.0f));
         ImGui::SetNextWindowSize(sf::Vector2f(700.0f, 400.0f));
         ImGui::SetNextWindowBgAlpha(0.7f);
         ImGui::Begin(
-            "m_SFMLWindow",
+            "m_Window",
             nullptr,
             ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse
         );
 
-        // background color
-        if (ImGui::ColorEdit3("Background color", color)) {
-            backgroundColor.r = static_cast<sf::Uint8>(color[0] * 255.0f);
-            backgroundColor.g = static_cast<sf::Uint8>(color[1] * 255.0f);
-            backgroundColor.b = static_cast<sf::Uint8>(color[2] * 255.0f);
+        if (ImGui::ColorEdit3("Background color", m_Colors)) {
+            m_BackgroundColor.r = static_cast<sf::Uint8>(m_Colors[0] * 255.0f);
+            m_BackgroundColor.g = static_cast<sf::Uint8>(m_Colors[1] * 255.0f);
+            m_BackgroundColor.b = static_cast<sf::Uint8>(m_Colors[2] * 255.0f);
         }
 
         ImGui::TextUnformatted(("FPS: " + std::to_string(1.0f / elapsedTime.asSeconds())).c_str());
-        ImGui::TextUnformatted(std::to_string(std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count()).c_str());
-        ImGui::Checkbox("Toggle", &checkBox);
-        ImGui::SliderFloat("Slider", &sliderValue, 0.0f, 10.0f, "%.1f");
-        ImGui::NewLine();
-        ImGui::ListBox("ListBox", &selectedItem, items, IM_ARRAYSIZE(items), 2);
-        ImGui::Combo("Combo", &selectedItem, items, IM_ARRAYSIZE(items));
+        ImGui::TextUnformatted(std::to_string(std::chrono::duration_cast<std::chrono::milliseconds>(m_End - m_Start).count()).c_str());
 
         if (ImGui::Button("Push Button"))
             std::cout << "fuck this shit" << std::endl;
@@ -132,9 +132,9 @@ namespace Hey {     // healthy eye
     }
 
     void Application::OnRender() {
-        m_SFMLWindow.clear(backgroundColor);
-        ImGui::SFML::Render(m_SFMLWindow);
-        m_SFMLWindow.display();
+        m_Window.clear(m_BackgroundColor);
+        ImGui::SFML::Render(m_Window);
+        m_Window.display();
     }
 
 } // namespace Hey
