@@ -22,8 +22,15 @@ namespace Hey {
 
     private:
         // member methods
-        void OpenWindow();
-        void CloseWindow();
+        void InitWindow(unsigned int width, unsigned int height, const char* title);
+        void InitFonts();
+        void InitShortcuts();
+
+        void HideWindow();
+        void ShowWindow();
+        void Kill();
+
+        void OnPollEvent();
         void OnUpdate();
         void OnRender();
 
@@ -38,8 +45,6 @@ namespace Hey {
         sf::Color        m_BackgroundColor;
         float            m_Colors[3];
         ImFont*          m_Font;
-        std::chrono::time_point<std::chrono::steady_clock> m_Start;
-        std::chrono::time_point<std::chrono::steady_clock> m_End;
         sf::Clock        m_Clock;
         ShortcutContainer m_Shortcuts;
         bool             m_Visible;

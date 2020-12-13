@@ -1,29 +1,59 @@
 #include "Application.hpp"
 
 #include <iostream>
-#include <thread>
 
 #include <imgui-SFML.h>
-
-#include <SFML/Window/Event.hpp>
 
 namespace Hey {
 
     // constructor / destructor
     Application::Application(unsigned int width, unsigned int height, const char* title)
-        : m_Window(sf::VideoMode(width, height), title),
-          m_Colors{ 0.0f, 0.0f, 0.0f },
+        : m_Colors{ 0.0f, 0.0f, 0.0f },
+          m_Font(nullptr),
           m_Visible(true) {
 
-        HWND__* windowsConsoleWindow = GetConsoleWindow();
-        ShowWindow(windowsConsoleWindow, SW_HIDE);
+        InitWindow(width, height, title);
+        InitFonts();
+        InitShortcuts();
+    }
 
+    Application::~Application() {
+        ImGui::SFML::Shutdown();
+    }
+
+    // public methods
+    void Application::Run() {
+        while (m_Window.isOpen()) {
+            OnPollEvent();
+            OnUpdate();
+            OnRender();
+        }
+    }
+
+    // member methods
+    void Application::InitWindow(unsigned int width, unsigned int height, const char* title) {
+        // init SFML RenderWindow
+        m_Window.create(sf::VideoMode(width, height), title);
+        m_Window.setVerticalSyncEnabled(true);
+        m_Window.setFramerateLimit(60u);
+        m_Window.setKeyRepeatEnabled(false);
+
+        // hide Windows console window
+        HWND__* consoleWindow = GetConsoleWindow();
+        ::ShowWindow(consoleWindow, SW_HIDE);
+
+        // init ImGui
         ImGui::SFML::Init(m_Window);
+    }
 
+    void Application::InitFonts() {
         ImGuiIO &io = ImGui::GetIO();
         m_Font = io.Fonts->AddFontFromFileTTF("../media/Fonts/Baloo2-Medium.ttf", 30.0f);
-        ImGui::SFML::UpdateFontTexture();
 
+        ImGui::SFML::UpdateFontTexture();
+    }
+
+    void Application::InitShortcuts() {
         m_Shortcuts[ShortcutType::Visible] = {
             sf::Keyboard::LControl,
             sf::Keyboard::LSystem,
@@ -37,68 +67,41 @@ namespace Hey {
         };
     }
 
-    Application::~Application() {
-        ImGui::SFML::Shutdown();
+    void Application::HideWindow() {
+        m_Visible = false;
+        m_Window.setVisible(m_Visible);
     }
 
-    // public methods
-    void Application::Run() {
-        m_Start = std::chrono::steady_clock::now();
-
-        while (m_Window.isOpen()) {
-            sf::Event event{};
-
-            while (m_Window.pollEvent(event)) {
-                ImGui::SFML::ProcessEvent(event);
-
-                if (event.type == sf::Event::Closed) {
-                    m_Visible = false;
-                    m_Window.setVisible(m_Visible);
-                }
-
-            }
-
-            OnUpdate();
-            OnRender();
-        }
+    void Application::ShowWindow() {
+        m_Visible = true;
+        m_Window.setVisible(m_Visible);
     }
 
-    // member methods
-    void Application::OpenWindow() {
-        m_Window.create(m_VideoMode, m_Title, sf::Style::Close);
-        m_Window.setVerticalSyncEnabled(true);
-        m_Window.setFramerateLimit(60u);
-        m_Window.setKeyRepeatEnabled(false);
-    }
-
-    void Application::CloseWindow() {
+    void Application::Kill() {
         m_Window.close();
     }
 
+    void Application::OnPollEvent() {
+        sf::Event event{};
+
+        while (m_Window.pollEvent(event)) {
+            ImGui::SFML::ProcessEvent(event);
+
+            if (event.type == sf::Event::Closed)
+                HideWindow();
+        }
+    }
+
     void Application::OnUpdate() {
+        // update shortcuts
         for (auto& [type, shortcut] : m_Shortcuts)
             shortcut.OnUpdate();
 
-        if (m_Shortcuts[ShortcutType::Visible].IsActive()) {
-            m_Visible = !m_Visible;
-            m_Window.setVisible(m_Visible);
-        }
+        if (m_Shortcuts[ShortcutType::Visible].IsActive())
+            m_Visible ? HideWindow() : ShowWindow();
 
-        if (m_Shortcuts[ShortcutType::Kill].IsActive()) {
-            m_Window.close();
-        }
-
-        m_End = std::chrono::steady_clock::now();
-
-//        if (std::chrono::duration_cast<std::chrono::milliseconds>(m_End - m_Start).count() >= 2000) {
-////                CloseWindow();
-////                m_Window.setVisible(false);
-//            std::this_thread::sleep_for(std::chrono::milliseconds(2000));
-////                OpenWindow();
-////                m_Window.setVisible(true);
-//            m_Start = std::chrono::steady_clock::now();
-//            m_End = std::chrono::steady_clock::now();
-//        }
+        if (m_Shortcuts[ShortcutType::Kill].IsActive())
+            Kill();
 
         // update ImGui
         sf::Time elapsedTime = m_Clock.restart();
@@ -122,10 +125,12 @@ namespace Hey {
         }
 
         ImGui::TextUnformatted(("FPS: " + std::to_string(1.0f / elapsedTime.asSeconds())).c_str());
-        ImGui::TextUnformatted(std::to_string(std::chrono::duration_cast<std::chrono::milliseconds>(m_End - m_Start).count()).c_str());
 
-        if (ImGui::Button("Push Button"))
-            std::cout << "fuck this shit" << std::endl;
+        if (ImGui::Button("Hide Window"))
+            HideWindow();
+
+        if (ImGui::Button("Kill Application :("))
+            Kill();
 
         ImGui::End();
         ImGui::PopFont();
@@ -133,6 +138,7 @@ namespace Hey {
 
     void Application::OnRender() {
         m_Window.clear(m_BackgroundColor);
+
         ImGui::SFML::Render(m_Window);
         m_Window.display();
     }
