@@ -17,7 +17,7 @@ namespace Hey {
     class Application : public Ng::Engine::Application {
     public:
         // constructor / destructor
-        Application(unsigned int width, unsigned int height, const char* title);
+        Application();
         ~Application() override = default;
 
     private:
