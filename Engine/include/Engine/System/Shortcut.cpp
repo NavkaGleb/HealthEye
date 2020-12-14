@@ -1,6 +1,6 @@
 #include "Shortcut.hpp"
 
-namespace Hey {
+namespace Ng::Engine {
 
     // constructor / destructor
     Shortcut::Shortcut()

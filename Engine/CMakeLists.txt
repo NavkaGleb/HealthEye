@@ -1,16 +1,17 @@
 set(HEADER_FILES
-    include/Engine/State.hpp
-    include/Engine/StateStack.hpp
-    include/Engine/Application.hpp
-    include/Engine/Shortcut.hpp
-    src/StateInterface.hpp
+    include/Engine/States/State.hpp
+    src/States/StateStack.hpp
+    include/Engine/Application/Application.hpp
+    include/Engine/System/Shortcut.hpp
+    src/States/StateInterface.hpp
+    include/Engine/Engine.hpp
 )
 
 set(SOURCE_FILES
-    include/Engine/State.cpp
-    include/Engine/StateStack.cpp
-    include/Engine/Application.cpp
-    include/Engine/Shortcut.cpp
+    include/Engine/States/State.cpp
+    src/States/StateStack.cpp
+    include/Engine/Application/Application.cpp
+    include/Engine/System/Shortcut.cpp
 )
 
 # SFML
@@ -19,7 +20,7 @@ find_package(SFML 2.5.1 COMPONENTS system window graphics audio REQUIRED)
 # ImGui-SFML
 find_package(ImGui-SFML REQUIRED)
 
-include_directories("include" "src" ${SFML_INCLUDE_DIR})
+include_directories("include/Engine" "src" ${SFML_INCLUDE_DIR})
 
 add_library(Engine ${HEADER_FILES} ${SOURCE_FILES})
 

@@ -9,7 +9,7 @@ namespace Hey {
 
     // constructor / destructor
     Application::Application(unsigned int width, unsigned int height, const char* title)
-        : ::Ng::Engine::Application(width, height, title, sf::Style::Close),
+        : Ng::Engine::Application(width, height, title, sf::Style::Close),
           m_Colors({ 0.0f, 0.0f, 0.0f }),
           m_Font(nullptr),
           m_Visible(true),

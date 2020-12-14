@@ -6,7 +6,7 @@
 #include <SFML/Window/Event.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>
 
-#include "StateInterface.hpp"
+#include "States/StateInterface.hpp"
 
 namespace Ng::Engine {
 

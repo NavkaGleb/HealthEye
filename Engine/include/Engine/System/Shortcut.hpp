@@ -6,7 +6,7 @@
 #include <SFML/Window/Event.hpp>
 #include <SFML/Window/Keyboard.hpp>
 
-namespace Hey {
+namespace Ng::Engine {
 
     class Shortcut {
     public:

@@ -9,12 +9,12 @@
 
 #include "Timer/Timer.hpp"
 
-#include <Engine/Shortcut.hpp>
-#include <Engine/Application.hpp>
+#include <Engine/Application/Application.hpp>
+#include <Engine/System/Shortcut.hpp>
 
 namespace Hey {
 
-    class Application : public ::Ng::Engine::Application {
+    class Application : public Ng::Engine::Application {
     public:
         // constructor / destructor
         Application(unsigned int width, unsigned int height, const char* title);
@@ -46,7 +46,7 @@ namespace Hey {
 
 
         // aliases
-        using ShortcutContainer = std::unordered_map<ShortcutType, Shortcut>;
+        using ShortcutContainer = std::unordered_map<ShortcutType, Ng::Engine::Shortcut>;
 
         // member data
         Range<float, sf::Color, 3>  m_Colors;

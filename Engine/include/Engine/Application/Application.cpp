@@ -2,10 +2,9 @@
 
 #include <windows.h>
 
-#include <imgui.h>
 #include <imgui-SFML.h>
 
-#include "State.hpp"
+#include "States/State.hpp"
 
 namespace Ng::Engine {
 

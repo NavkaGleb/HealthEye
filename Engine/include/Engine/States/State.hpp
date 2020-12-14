@@ -2,8 +2,8 @@
 
 #include <SFML/Graphics/RenderWindow.hpp>
 
-#include "StateInterface.hpp"
-#include "StateStack.hpp"
+#include "States/StateInterface.hpp"
+#include "States/StateStack.hpp"
 
 namespace Ng::Engine {
 
