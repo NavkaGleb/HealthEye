@@ -8,9 +8,14 @@ namespace Hey {
 
     // constructor / destructor
     Application::Application(unsigned int width, unsigned int height, const char* title)
-        : m_Colors{ 0.0f, 0.0f, 0.0f },
+        : m_Colors({ 0.0f, 0.0f, 0.0f }),
           m_Font(nullptr),
-          m_Visible(true) {
+          m_Visible(true),
+          m_WorkTime{ { "25", "30", "35", "40" }, 0 },
+          m_SleepTime{ { "2", "3", "4", "5" }, 0 },
+          m_BigSleepTime{ { "10", "20" } },
+          m_WorkTimeCount{ { "6", "7" }, 0},
+          m_Timer(std::chrono::seconds(5)) {
 
         InitWindow(width, height, title);
         InitFonts();
@@ -33,7 +38,7 @@ namespace Hey {
     // member methods
     void Application::InitWindow(unsigned int width, unsigned int height, const char* title) {
         // init SFML RenderWindow
-        m_Window.create(sf::VideoMode(width, height), title);
+        m_Window.create(sf::VideoMode(width, height), title, sf::Style::Close);
         m_Window.setVerticalSyncEnabled(true);
         m_Window.setFramerateLimit(60u);
         m_Window.setKeyRepeatEnabled(false);
@@ -110,7 +115,7 @@ namespace Hey {
         // begin ImGui
         ImGui::PushFont(m_Font);
         ImGui::SetNextWindowPos(sf::Vector2f(0.0f, 0.0f));
-        ImGui::SetNextWindowSize(sf::Vector2f(700.0f, 400.0f));
+        ImGui::SetNextWindowSize(sf::Vector2f(700.0f, 500.0f));
         ImGui::SetNextWindowBgAlpha(0.7f);
         ImGui::Begin(
             "m_Window",
@@ -118,13 +123,22 @@ namespace Hey {
             ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse
         );
 
-        if (ImGui::ColorEdit3("Background color", m_Colors)) {
-            m_BackgroundColor.r = static_cast<sf::Uint8>(m_Colors[0] * 255.0f);
-            m_BackgroundColor.g = static_cast<sf::Uint8>(m_Colors[1] * 255.0f);
-            m_BackgroundColor.b = static_cast<sf::Uint8>(m_Colors[2] * 255.0f);
+        if (ImGui::ColorEdit3("Background color", m_Colors.Data.begin())) {
+            m_Colors.Current.r = static_cast<sf::Uint8>(m_Colors.Data[0] * 255.0f);
+            m_Colors.Current.g = static_cast<sf::Uint8>(m_Colors.Data[1] * 255.0f);
+            m_Colors.Current.b = static_cast<sf::Uint8>(m_Colors.Data[2] * 255.0f);
         }
 
         ImGui::TextUnformatted(("FPS: " + std::to_string(1.0f / elapsedTime.asSeconds())).c_str());
+        ImGui::Combo("Work Time",       &m_WorkTime.Current,      m_WorkTime.Data.cbegin(),      m_WorkTime.Data.size()     );
+        ImGui::Combo("Sleep Time",      &m_SleepTime.Current,     m_SleepTime.Data.cbegin(),     m_SleepTime.Data.size()    );
+        ImGui::Combo("Big Sleep Time",  &m_BigSleepTime.Current,  m_BigSleepTime.Data.cbegin(),  m_BigSleepTime.Data.size() );
+        ImGui::Combo("Work Time Count", &m_WorkTimeCount.Current, m_WorkTimeCount.Data.cbegin(), m_WorkTimeCount.Data.size());
+
+        if (ImGui::Button("Start"))
+            m_Timer.Start();
+
+        ImGui::NewLine();
 
         if (ImGui::Button("Hide Window"))
             HideWindow();
@@ -137,7 +151,7 @@ namespace Hey {
     }
 
     void Application::OnRender() {
-        m_Window.clear(m_BackgroundColor);
+        m_Window.clear(m_Colors.Current);
 
         ImGui::SFML::Render(m_Window);
         m_Window.display();

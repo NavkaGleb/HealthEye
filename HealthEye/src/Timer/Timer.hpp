@@ -1,0 +1,34 @@
+#pragma once
+
+#include <chrono>
+
+namespace Hey {
+
+    ///////////////////////////////////////////////////////////////////////
+    /// Header
+    ///////////////////////////////////////////////////////////////////////
+    class Timer {
+    public:
+        // constructor / destructor
+        explicit Timer(std::chrono::seconds seconds);
+
+        // public methods
+        void Start();
+        void Reset();
+
+    private:
+        // member methods
+
+        // aliases
+
+        // member data
+       std::chrono::seconds m_Period;
+
+    }; // class Timer
+
+    ///////////////////////////////////////////////////////////////////////
+    /// Source
+    ///////////////////////////////////////////////////////////////////////
+
+
+} // namespace Hey
