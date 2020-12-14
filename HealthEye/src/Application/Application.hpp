@@ -7,23 +7,22 @@
 
 #include <imgui.h>
 
-#include "Shortcut.hpp"
 #include "Timer/Timer.hpp"
+
+#include <Engine/Shortcut.hpp>
+#include <Engine/Application.hpp>
 
 namespace Hey {
 
-    class Application {
+    class Application : public ::Ng::Engine::Application {
     public:
         // constructor / destructor
         Application(unsigned int width, unsigned int height, const char* title);
-        virtual ~Application();
-
-        // public methods
-        void Run();
+        ~Application() override = default;
 
     private:
         // member methods
-        void InitWindow(unsigned int width, unsigned int height, const char* title);
+        void InitWindow();
         void InitFonts();
         void InitShortcuts();
 
@@ -31,9 +30,9 @@ namespace Hey {
         void ShowWindow();
         void Kill();
 
-        void OnPollEvent();
-        void OnUpdate();
-        void OnRender();
+        void OnPollEvent() override;
+        void OnUpdate() override;
+        void OnRender() override;
 
         // enums
         enum class ShortcutType : short { Visible = 0, Kill };
@@ -50,10 +49,8 @@ namespace Hey {
         using ShortcutContainer = std::unordered_map<ShortcutType, Shortcut>;
 
         // member data
-        sf::RenderWindow m_Window;
         Range<float, sf::Color, 3>  m_Colors;
         ImFont*          m_Font;
-        sf::Clock        m_Clock;
         ShortcutContainer m_Shortcuts;
         bool             m_Visible;
         Range<const char*, int, 4>        m_WorkTime;
