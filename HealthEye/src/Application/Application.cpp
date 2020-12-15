@@ -27,9 +27,9 @@ namespace Hey {
     // member methods
     void Application::InitWindow() {
         // TODO: Set to context and enable auto update in RenderWindow
-        m_RenderWindow.setVerticalSyncEnabled(true);
-        m_RenderWindow.setFramerateLimit(60u);
-        m_RenderWindow.setKeyRepeatEnabled(false);
+        Ng::Engine::Application::GetContext().SetFramerateLimit(60u);
+        Ng::Engine::Application::GetContext().SetVerticalSyncEnabled(true);
+        Ng::Engine::Application::GetContext().SetKeyRepeatEnabled(false);
     }
 
     void Application::InitFonts() {

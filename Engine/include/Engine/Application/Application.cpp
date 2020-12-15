@@ -4,15 +4,13 @@
 
 #include <imgui-SFML.h>
 
-#include "States/State.hpp"
-
 namespace Ng::Engine {
 
     // constructor / destructor
     Application::Application(unsigned int width, unsigned int height, const char* title, uint32_t style) {
         // init SFML RenderWindow
         m_RenderWindow.create(sf::VideoMode(width, height), title, style);
-        State::GetContext().RenderWindow = &m_RenderWindow;
+        State::GetContext().m_RenderWindow = &m_RenderWindow;
 
         // hide Windows console window
         HWND__* consoleWindow = GetConsoleWindow();

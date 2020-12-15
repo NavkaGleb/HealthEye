@@ -2,8 +2,8 @@
 
 #include <SFML/Graphics/RenderWindow.hpp>
 
-#include "States/StateInterface.hpp"
-#include "States/StateStack.hpp"
+#include "../../../src/States/StateInterface.hpp"
+#include "../../../src/States/StateStack.hpp"
 
 namespace Ng::Engine {
 
@@ -25,18 +25,36 @@ namespace Ng::Engine {
         // friends
         friend class Application;
 
-    private:
-        // inner structs
-        struct Context {
-            // data
-            sf::RenderWindow* RenderWindow        = nullptr;
-            unsigned          FramerateLimit      = 60;
-            bool              VerticalSyncEnabled = true;
-            bool              Visible             = true;
-            bool              KeyRepeatEnabled    = true;
-        };
-
     protected:
+        // inner structs
+        class Context {
+        public:
+            // accessors
+            [[nodiscard]] inline const sf::RenderWindow* GetRenderWindow() const { return m_RenderWindow; }
+            [[nodiscard]] inline unsigned int GetFramerateLimit() const { return m_FramerateLimit; }
+            [[nodiscard]] inline bool GetVerticalSyncEnabled() const { return m_VerticalSyncEnabled; }
+            [[nodiscard]] inline bool GetVisible() const { return m_Visible; }
+            [[nodiscard]] inline bool GetKeyRepeatEnabled() const { return m_KeyRepeatEnabled; }
+
+            // modifiers
+            void SetFramerateLimit(unsigned int framerateLimit);
+            void SetVerticalSyncEnabled(bool verticalSyncEnabled);
+            void SetVisible(bool visible);
+            void SetKeyRepeatEnabled(bool keyRepeatEnabled);
+
+            // friends
+            friend class Application;
+
+        private:
+            // member data
+            sf::RenderWindow* m_RenderWindow        = nullptr;
+            unsigned          m_FramerateLimit      = 60;
+            bool              m_VerticalSyncEnabled = true;
+            bool              m_Visible             = true;
+            bool              m_KeyRepeatEnabled    = true;
+
+        }; // class Context
+
         // static protected accessors
         static StateStack& GetStateStack() noexcept;
         static Context& GetContext() noexcept;

@@ -4,6 +4,8 @@
 
 #include <SFML/Graphics/RenderWindow.hpp>
 
+#include "../States/State.hpp"
+
 namespace Ng::Engine {
 
     class Application {
@@ -16,6 +18,9 @@ namespace Ng::Engine {
         void Run();
 
     protected:
+        // subsidiaries static methods
+        static inline State::Context& GetContext() { return State::GetContext(); }
+
         // subsidiaries methods
         virtual void OnPollEvent();
         virtual void OnUpdate() = 0;
@@ -24,13 +29,11 @@ namespace Ng::Engine {
         // subsidiaries data
         sf::RenderWindow m_RenderWindow;
         sf::Time         m_ElapsedTime;
+        sf::Clock        m_Clock;
 
     private:
         // member methods
         void OnImGuiUpdate();
-
-        // member data
-        sf::Clock        m_Clock;
 
     }; // Application
 

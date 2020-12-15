@@ -44,7 +44,6 @@ namespace Hey {
             Pointer                     Current;
         }; // struct Period
 
-
         // aliases
         using ShortcutContainer = std::unordered_map<ShortcutType, Ng::Engine::Shortcut>;
 
