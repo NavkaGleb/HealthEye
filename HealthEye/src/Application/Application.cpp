@@ -28,8 +28,15 @@ namespace Hey {
         Ng::Engine::Application::GetContext().SetVerticalSyncEnabled(true);
         Ng::Engine::Application::GetContext().SetKeyRepeatEnabled(false);
 
+        // init ImGui
+        ImGui::SFML::Init(m_RenderWindow);
+
         InitFonts();
         InitShortcuts();
+    }
+
+    Application::~Application() {
+        ImGui::SFML::Shutdown();
     }
 
     // member methods

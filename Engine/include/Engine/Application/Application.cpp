@@ -2,8 +2,6 @@
 
 #include <windows.h>
 
-#include <imgui-SFML.h>
-
 namespace Ng::Engine {
 
     // constructor / destructor
@@ -16,13 +14,6 @@ namespace Ng::Engine {
         // hide Windows console window
         HWND__* consoleWindow = GetConsoleWindow();
         ::ShowWindow(consoleWindow, SW_HIDE);
-
-        // init ImGui
-        ImGui::SFML::Init(m_RenderWindow);
-    }
-
-    Application::~Application() {
-        ImGui::SFML::Shutdown();
     }
 
     // public methods
@@ -30,8 +21,6 @@ namespace Ng::Engine {
         sf::Event event{};
 
         while (m_RenderWindow.pollEvent(event)) {
-            ImGui::SFML::ProcessEvent(event);
-
             if (event.type == sf::Event::Closed)
                 m_RenderWindow.close();
 
@@ -51,17 +40,16 @@ namespace Ng::Engine {
 
     void Application::Run() {
         while (m_RenderWindow.isOpen()) {
+            OnUpdateElapsedTime();
             OnPollEvent();
-            OnImGuiUpdate();
             OnUpdate();
             OnRender();
         }
     }
 
-    // private methods
-    void Application::OnImGuiUpdate() {
+    // member methods
+    void Application::OnUpdateElapsedTime() {
         m_ElapsedTime = m_Clock.restart();
-        ImGui::SFML::Update(m_RenderWindow, m_ElapsedTime);
     }
 
 } // namespace Ng::Engine

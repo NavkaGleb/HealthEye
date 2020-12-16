@@ -16,7 +16,7 @@ namespace Ng::Engine {
                     const char* title,
                     uint32_t style = sf::Style::Default,
                     const sf::ContextSettings& contextSettings = sf::ContextSettings());
-        virtual ~Application();
+        virtual ~Application() = default;
 
         // public methods
         void Run();
@@ -37,7 +37,7 @@ namespace Ng::Engine {
 
     private:
         // member methods
-        void OnImGuiUpdate();
+        void OnUpdateElapsedTime();
 
     }; // Application
 

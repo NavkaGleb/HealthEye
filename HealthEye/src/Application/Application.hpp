@@ -18,7 +18,7 @@ namespace Hey {
     public:
         // constructor / destructor
         Application();
-        ~Application() override = default;
+        ~Application() override;
 
     private:
         // member methods
