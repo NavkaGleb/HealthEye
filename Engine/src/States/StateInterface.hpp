@@ -14,7 +14,7 @@ namespace Ng::Engine {
         virtual void OnMouseButtonReleased(const sf::Event& event) = 0;
         virtual void OnKeyPressed(const sf::Event& event)          = 0;
 
-        virtual void OnUpdate(const float& dt)                     = 0;
+        virtual void OnUpdate(float dt)                            = 0;
         virtual void OnRender(sf::RenderTarget& target) const      = 0;
 
     }; // class StateInterface

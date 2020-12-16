@@ -19,7 +19,7 @@ namespace Ng::Engine {
         void OnMouseButtonReleased(const sf::Event& event) override {};
         void OnKeyPressed(const sf::Event& event) override {};
 
-        void OnUpdate(const float& dt) override                = 0;
+        void OnUpdate(float dt) override                       = 0;
         void OnRender(sf::RenderTarget& target) const override = 0;
 
         // friends
@@ -30,7 +30,7 @@ namespace Ng::Engine {
         class Context {
         public:
             // accessors
-            [[nodiscard]] inline const sf::RenderWindow* GetRenderWindow() const { return m_RenderWindow; }
+            [[nodiscard]] inline sf::RenderWindow* GetRenderWindow() const { return m_RenderWindow; }
             [[nodiscard]] inline unsigned int GetFramerateLimit() const { return m_FramerateLimit; }
             [[nodiscard]] inline bool GetVerticalSyncEnabled() const { return m_VerticalSyncEnabled; }
             [[nodiscard]] inline bool GetVisible() const { return m_Visible; }

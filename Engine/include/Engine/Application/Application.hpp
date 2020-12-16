@@ -21,9 +21,10 @@ namespace Ng::Engine {
         // public methods
         void Run();
 
-    protected:
+    public:
         // subsidiaries static methods
         static inline State::Context& GetContext() { return State::GetContext(); }
+        static inline StateStack& GetStateStack() { return State::GetStateStack(); }
 
         // subsidiaries methods
         virtual void OnPollEvent();

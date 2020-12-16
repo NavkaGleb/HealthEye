@@ -33,7 +33,7 @@ namespace Ng::Engine {
             m_States.top()->OnKeyPressed(event);
     }
 
-    void StateStack::OnUpdate(const float& dt) {
+    void StateStack::OnUpdate(float dt) {
         if (!m_States.empty())
             m_States.top()->OnUpdate(dt);
     }

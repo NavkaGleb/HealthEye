@@ -30,7 +30,7 @@ namespace Ng::Engine {
         void OnMouseButtonReleased(const sf::Event& event) override;
         void OnKeyPressed(const sf::Event& event) override;
 
-        void OnUpdate(const float& dt) override;
+        void OnUpdate(float dt) override;
         void OnRender(sf::RenderTarget& target) const override;
 
     private:
