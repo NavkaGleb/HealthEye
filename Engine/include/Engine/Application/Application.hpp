@@ -3,6 +3,7 @@
 #include <cstdint>
 
 #include <SFML/Graphics/RenderWindow.hpp>
+#include <SFML/Window/ContextSettings.hpp>
 
 #include "../States/State.hpp"
 
@@ -11,7 +12,10 @@ namespace Ng::Engine {
     class Application {
     public:
         // constructor / destructor
-        Application(unsigned int width, unsigned int height, const char* title, uint32_t style = sf::Style::Default);
+        Application(unsigned int width, unsigned int height,
+                    const char* title,
+                    uint32_t style = sf::Style::Default,
+                    const sf::ContextSettings& contextSettings = sf::ContextSettings());
         virtual ~Application();
 
         // public methods

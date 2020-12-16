@@ -22,7 +22,6 @@ namespace Hey {
 
     private:
         // member methods
-        void InitWindow();
         void InitFonts();
         void InitShortcuts();
 
@@ -42,6 +41,7 @@ namespace Hey {
         struct Range {
             std::array<RangeType, size> Data;
             Pointer                     Current;
+
         }; // struct Period
 
         // aliases

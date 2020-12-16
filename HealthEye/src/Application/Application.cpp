@@ -9,7 +9,12 @@ namespace Hey {
 
     // constructor / destructor
     Application::Application()
-        : Ng::Engine::Application(1080, 720, "SFML + ImGui = <3", sf::Style::Close),
+        : Ng::Engine::Application(
+              1080, 720,
+              "SFML + ImGui = <3",
+              sf::Style::Close,
+              sf::ContextSettings(0, 0, 8, 1, 1, sf::ContextSettings::Attribute::Default, false)
+          ),
           m_Colors({ 0.0f, 0.0f, 0.0f }),
           m_Font(nullptr),
           m_Visible(true),
@@ -19,19 +24,15 @@ namespace Hey {
           m_WorkTimeCount{ { "6", "7" }, 0 },
           m_Timer(std::chrono::seconds(5)) {
 
-        InitWindow();
+        Ng::Engine::Application::GetContext().SetFramerateLimit(60u);
+        Ng::Engine::Application::GetContext().SetVerticalSyncEnabled(true);
+        Ng::Engine::Application::GetContext().SetKeyRepeatEnabled(false);
+
         InitFonts();
         InitShortcuts();
     }
 
     // member methods
-    void Application::InitWindow() {
-        // TODO: Set to context and enable auto update in RenderWindow
-        Ng::Engine::Application::GetContext().SetFramerateLimit(60u);
-        Ng::Engine::Application::GetContext().SetVerticalSyncEnabled(true);
-        Ng::Engine::Application::GetContext().SetKeyRepeatEnabled(false);
-    }
-
     void Application::InitFonts() {
         ImGuiIO& io = ImGui::GetIO();
         m_Font = io.Fonts->AddFontFromFileTTF("../../HealthEye/media/Fonts/Baloo2-Medium.ttf", 30.0f);

@@ -7,9 +7,10 @@
 namespace Ng::Engine {
 
     // constructor / destructor
-    Application::Application(unsigned int width, unsigned int height, const char* title, uint32_t style) {
+    Application::Application(unsigned int width, unsigned int height,
+                             const char* title, uint32_t style, const sf::ContextSettings& contextSettings) {
         // init SFML RenderWindow
-        m_RenderWindow.create(sf::VideoMode(width, height), title, style);
+        m_RenderWindow.create(sf::VideoMode(width, height), title, style, contextSettings);
         State::GetContext().m_RenderWindow = &m_RenderWindow;
 
         // hide Windows console window
