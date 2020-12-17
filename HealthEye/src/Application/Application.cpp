@@ -1,8 +1,5 @@
 #include "Application.hpp"
 
-#include <iostream>
-#include <chrono>
-
 #include <imgui-SFML.h>
 
 #include "States/InitState.hpp"
@@ -18,6 +15,7 @@ namespace Hey {
               sf::ContextSettings(0, 0, 8, 1, 1, sf::ContextSettings::Attribute::Default, false)
           ) {
 
+        // init RenderWindow context
         Ng::Engine::Application::GetContext().SetFramerateLimit(60u);
         Ng::Engine::Application::GetContext().SetVerticalSyncEnabled(true);
         Ng::Engine::Application::GetContext().SetKeyRepeatEnabled(false);
@@ -25,6 +23,7 @@ namespace Hey {
         // init ImGui
         ImGui::SFML::Init(m_RenderWindow);
 
+        // init states
         Ng::Engine::Application::GetStateStack().Push(std::make_unique<Hey::InitState>());
     }
 

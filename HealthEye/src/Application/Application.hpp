@@ -1,16 +1,6 @@
 #pragma once
 
-#include <array>
-#include <windows.h>
-
-#include <SFML/Graphics/RenderWindow.hpp>
-
-#include <imgui.h>
-
-#include "Timer/Timer.hpp"
-
 #include <Engine/Application/Application.hpp>
-#include <Engine/System/Shortcut.hpp>
 
 namespace Hey {
 
