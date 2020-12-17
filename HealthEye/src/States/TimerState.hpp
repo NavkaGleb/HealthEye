@@ -21,8 +21,14 @@ namespace Hey {
     private:
         // member methods
 
+        // enums
+        enum class TimerType : short { Work = 0, Sleep };
+
+        // aliases
+        using TimerContainer = std::unordered_map<TimerType, Timer>;
+
         // member data
-        Timer m_Timer;
+        TimerContainer m_Timers;
         std::thread m_Thread;
 
     }; // class TimerState

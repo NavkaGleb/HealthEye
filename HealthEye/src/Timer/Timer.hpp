@@ -1,6 +1,7 @@
 #pragma once
 
 #include <chrono>
+#include <thread>
 
 namespace Hey {
 
@@ -10,7 +11,8 @@ namespace Hey {
     class Timer {
     public:
         // constructor / destructor
-        explicit Timer(std::chrono::seconds seconds);
+        Timer();
+        Timer(Timer&& other) noexcept;
         ~Timer();
 
         // accessors
@@ -18,8 +20,13 @@ namespace Hey {
         [[nodiscard]] inline const std::chrono::seconds& GetEndTime() const { return m_EndTime; }
         [[nodiscard]] inline bool IsEnded() const { return m_CurrentTime == m_EndTime; }
 
+        // modifiers
+        void SetEndTime(std::chrono::seconds endTime);
+
         // public methods
         void Start();
+        void Pause();
+        void Resume();
         void Reset();
 
     private:
@@ -28,8 +35,10 @@ namespace Hey {
         // aliases
 
         // member data
-        std::chrono::seconds m_CurrentTime;
-        std::chrono::seconds m_EndTime;
+        std::chrono::seconds m_CurrentTime{};
+        std::chrono::seconds m_EndTime{};
+        bool                 m_IsPaused;
+        std::thread          m_Thread;
 
     }; // class Timer
 

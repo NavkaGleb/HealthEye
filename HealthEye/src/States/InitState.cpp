@@ -13,11 +13,9 @@ namespace Hey {
         : m_Colors({ 0.0f, 0.0f, 0.0f }),
           m_Font(nullptr),
           m_WorkTime{ { "25", "30", "35", "40" }, 0 },
-          m_SleepTime{ { "2", "3", "4", "5" }, 0 },
-          m_Timer(std::chrono::seconds(5)) {
+          m_SleepTime{ { "2", "3", "4", "5" }, 0 } {
 
         InitFonts();
-        InitShortcuts();
     }
 
     InitState::~InitState() {
@@ -26,16 +24,6 @@ namespace Hey {
 
     // public methods
     void InitState::OnUpdate(float dt) {
-        // update shortcuts
-        for (auto& [type, shortcut] : m_Shortcuts)
-            shortcut.OnUpdate();
-
-        if (m_Shortcuts[ShortcutType::Visible].IsActive())
-            Ng::Engine::State::GetContext().SetVisible(!Ng::Engine::Application::GetContext().GetVisible());
-
-        if (m_Shortcuts[ShortcutType::Kill].IsActive())
-            Ng::Engine::State::GetContext().GetRenderWindow()->close();
-
         // begin ImGui
         ImGui::PushFont(m_Font);
         ImGui::SetNextWindowPos(sf::Vector2f(0.0f, 0.0f));
@@ -83,20 +71,6 @@ namespace Hey {
         m_Font = io.Fonts->AddFontFromFileTTF("../../HealthEye/media/Fonts/Baloo2-Medium.ttf", 30.0f);
 
         ImGui::SFML::UpdateFontTexture();
-    }
-
-    void InitState::InitShortcuts() {
-        m_Shortcuts[ShortcutType::Visible] = {
-            sf::Keyboard::LControl,
-            sf::Keyboard::LSystem,
-            sf::Keyboard::H
-        };
-
-        m_Shortcuts[ShortcutType::Kill] = {
-            sf::Keyboard::LAlt,
-            sf::Keyboard::LSystem,
-            sf::Keyboard::K,
-        };
     }
 
 } // namespace Hey
