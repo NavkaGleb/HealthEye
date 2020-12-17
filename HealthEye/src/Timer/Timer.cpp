@@ -10,19 +10,16 @@ namespace Hey {
     Timer::Timer()
         : m_CurrentTime(0),
           m_EndTime(0),
+          m_IsPaused(false) {}
+
+    Timer::Timer(std::chrono::seconds endTime)
+        : m_CurrentTime(0),
+          m_EndTime(endTime),
           m_IsPaused(false) {
 
     }
 
-    Timer::Timer(Timer&& other) noexcept {
-        m_CurrentTime = other.m_CurrentTime;
-        m_EndTime     = other.m_EndTime;
-        m_IsPaused    = other.m_IsPaused;
-        m_Thread      = std::move(other.m_Thread);
-    }
-
     Timer::~Timer() {
-        m_Thread.join();
         std::cout << "destructor Timer" << std::endl;
     }
 
@@ -35,24 +32,24 @@ namespace Hey {
     void Timer::Start() {
         namespace chr = std::chrono;
 
-        m_Thread = std::move(std::thread([&]() {
-            while (true) {
-                std::this_thread::sleep_for(std::chrono::seconds(1));
+        while (true) {
+            std::this_thread::sleep_for(std::chrono::seconds(1));
 
-                if (m_IsPaused)
-                    return;
+            if (m_IsPaused)
+                continue;
 
-                ++m_CurrentTime;
+            ++m_CurrentTime;
 
-                int64_t remainder = chr::duration_cast<chr::seconds>(m_EndTime - m_CurrentTime).count();
+            std::cout << "CurrentTime = " << m_CurrentTime.count() << std::endl;
 
-                if (remainder == 2)
-                    std::cout << '\7' << std::endl;
+            int64_t remainder = chr::duration_cast<chr::seconds>(m_EndTime - m_CurrentTime).count();
 
-                if (remainder == 0)
-                    return;
-            }
-        }));
+            if (remainder == 2)
+                std::cout << '\7' << std::endl;
+
+            if (remainder == 0)
+                return;
+        }
     }
 
     void Timer::Pause() {

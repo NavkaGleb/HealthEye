@@ -53,6 +53,9 @@ namespace Hey {
 
             if (event.type == sf::Event::Closed)
                 Ng::Engine::Application::GetContext().SetVisible(false);
+
+            if (event.type == sf::Event::KeyPressed)
+                Ng::Engine::Application::GetStateStack().OnKeyPressed(event);
         }
     }
 

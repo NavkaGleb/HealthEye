@@ -12,11 +12,11 @@ namespace Hey {
     public:
         // constructor / destructor
         Timer();
-        Timer(Timer&& other) noexcept;
+        explicit Timer(std::chrono::seconds endTime);
         ~Timer();
 
         // accessors
-        [[nodiscard]] inline const std::chrono::seconds& GetCurrentTime() const { return m_CurrentTime; }
+        [[nodiscard]] inline const std::chrono::seconds& GetTime() const { return m_CurrentTime; }
         [[nodiscard]] inline const std::chrono::seconds& GetEndTime() const { return m_EndTime; }
         [[nodiscard]] inline bool IsEnded() const { return m_CurrentTime == m_EndTime; }
 
@@ -35,10 +35,9 @@ namespace Hey {
         // aliases
 
         // member data
-        std::chrono::seconds m_CurrentTime{};
-        std::chrono::seconds m_EndTime{};
+        std::chrono::seconds m_CurrentTime;
+        std::chrono::seconds m_EndTime;
         bool                 m_IsPaused;
-        std::thread          m_Thread;
 
     }; // class Timer
 

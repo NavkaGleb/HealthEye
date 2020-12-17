@@ -15,6 +15,8 @@ namespace Hey {
         ~TimerState() override;
 
         // public methods
+        void OnKeyPressed(const sf::Event& event) override;
+
         void OnUpdate(float dt) override;
         void OnRender(sf::RenderTarget& target) const override;
 

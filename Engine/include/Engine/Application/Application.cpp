@@ -12,8 +12,8 @@ namespace Ng::Engine {
         State::GetContext().m_RenderWindow = &m_RenderWindow;
 
         // hide Windows console window
-        HWND__* consoleWindow = GetConsoleWindow();
-        ::ShowWindow(consoleWindow, SW_HIDE);
+//        HWND__* consoleWindow = GetConsoleWindow();
+//        ::ShowWindow(consoleWindow, SW_HIDE);
     }
 
     // public methods
