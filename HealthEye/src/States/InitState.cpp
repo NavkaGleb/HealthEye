@@ -41,13 +41,18 @@ namespace Hey {
             m_Colors.Current.b = static_cast<sf::Uint8>(m_Colors.Data[2] * 255.0f);
         }
 
-        ImGui::TextUnformatted(("FPS: " + std::to_string(1.0f / dt)).c_str());
-
         ImGui::Combo("Work Time",       &m_WorkTime.Current,      m_WorkTime.Data.cbegin(),      m_WorkTime.Data.size()     );
         ImGui::Combo("Sleep Time",      &m_SleepTime.Current,     m_SleepTime.Data.cbegin(),     m_SleepTime.Data.size()    );
 
-        if (ImGui::Button("Start"))
+        if (ImGui::Button("Timer State")) {
+            ImGui::End();
+            ImGui::PopFont();
+            ImGui::EndFrame();
+
             Ng::Engine::State::GetStateStack().Push(std::make_unique<Hey::TimerState>());
+
+            return;
+        }
 
         ImGui::NewLine();
 

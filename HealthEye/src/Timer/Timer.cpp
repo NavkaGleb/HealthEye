@@ -2,7 +2,7 @@
 
 #include <iostream>
 #include <chrono>
-#include <thread>
+#include <windows.h>
 
 namespace Hey {
 
@@ -10,17 +10,20 @@ namespace Hey {
     Timer::Timer()
         : m_CurrentTime(0),
           m_EndTime(0),
-          m_IsPaused(false) {}
+          m_IsPaused(false),
+          m_IsDestroyed(false) {}
 
     Timer::Timer(std::chrono::seconds endTime)
         : m_CurrentTime(0),
           m_EndTime(endTime),
-          m_IsPaused(false) {
+          m_IsPaused(false),
+          m_IsDestroyed(false) {
 
     }
 
     Timer::~Timer() {
         std::cout << "destructor Timer" << std::endl;
+        m_IsDestroyed = true;
     }
 
     // modifiers
@@ -32,7 +35,10 @@ namespace Hey {
     void Timer::Start() {
         namespace chr = std::chrono;
 
-        while (true) {
+        while ((m_EndTime - m_CurrentTime).count() > 0) {
+            if (m_IsDestroyed)
+                return;
+
             std::this_thread::sleep_for(std::chrono::seconds(1));
 
             if (m_IsPaused)
@@ -40,15 +46,8 @@ namespace Hey {
 
             ++m_CurrentTime;
 
-            std::cout << "CurrentTime = " << m_CurrentTime.count() << std::endl;
-
-            int64_t remainder = chr::duration_cast<chr::seconds>(m_EndTime - m_CurrentTime).count();
-
-            if (remainder == 2)
-                std::cout << '\7' << std::endl;
-
-            if (remainder == 0)
-                return;
+            if ((m_EndTime - m_CurrentTime).count() == 2)
+                Beep(500, 300);
         }
     }
 
@@ -62,6 +61,10 @@ namespace Hey {
 
     void Timer::Reset() {
         m_CurrentTime = std::chrono::seconds(0);
+    }
+
+    void Timer::Destroy() {
+        m_IsDestroyed = true;
     }
 
 } // namespace Hey

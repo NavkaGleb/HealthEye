@@ -28,6 +28,7 @@ namespace Hey {
         void Pause();
         void Resume();
         void Reset();
+        void Destroy();
 
     private:
         // member methods
@@ -38,6 +39,7 @@ namespace Hey {
         std::chrono::seconds m_CurrentTime;
         std::chrono::seconds m_EndTime;
         bool                 m_IsPaused;
+        bool                 m_IsDestroyed;
 
     }; // class Timer
 

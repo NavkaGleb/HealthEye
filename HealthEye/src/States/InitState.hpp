@@ -24,7 +24,7 @@ namespace Hey {
         void InitFonts();
 
         // enums
-        enum class RangeType    : short { WorkTime = 0, SleepTime };
+        enum class RangeType : short { WorkTime = 0, SleepTime };
 
         // inner members
         template <typename RangeType, typename Pointer, std::size_t size>

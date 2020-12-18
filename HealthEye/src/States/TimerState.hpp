@@ -2,6 +2,8 @@
 
 #include <thread>
 
+#include <imgui.h>
+
 #include <Engine/States/State.hpp>
 
 #include "Timer/Timer.hpp"
@@ -22,6 +24,9 @@ namespace Hey {
 
     private:
         // member methods
+        void InitFonts();
+        void StartTimers();
+        void ResetTimers();
 
         // enums
         enum class TimerType : short { Work = 0, Sleep };
@@ -31,7 +36,8 @@ namespace Hey {
 
         // member data
         TimerContainer m_Timers;
-        std::thread m_Thread;
+        std::thread    m_Thread;
+        ImFont*        m_Font;
 
     }; // class TimerState
 
